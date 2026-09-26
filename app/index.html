@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>调蓄池抽排曲线审计</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>调蓄池抽排曲线审计</h1>
+      <p class="sub">
+        暴雨前复核抽排方案：按全部关键点并集切分时间轴，对每段连续解析求总抽排上限与池量极值（不按分钟抽样）。
+        任何编辑都会使旧结论立即失效。
+      </p>
+    </header>
+
+    <section class="card">
+      <h2>全局参数</h2>
+      <div class="grid3">
+        <label>初始池量 (m³)
+          <input id="initial-volume" type="number" min="0" step="any">
+        </label>
+        <label>池容 (m³)
+          <input id="capacity" type="number" min="0" step="any">
+        </label>
+        <label>取水口上限 (m³/min)
+          <input id="intake-limit" type="number" min="0" step="any">
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="row-between">
+        <h2>降雨入流（2–5 个关键点）</h2>
+        <button type="button" class="mini" id="inflow-add">+ 添加入流点</button>
+      </div>
+      <table class="points">
+        <thead><tr><th>时刻 (min)</th><th>入流 (m³/min)</th><th></th></tr></thead>
+        <tbody id="inflow-body"></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <div class="row-between">
+        <h2>排水泵（2–4 台，各 2–5 个关键点）</h2>
+        <button type="button" class="mini" id="pump-add">+ 添加泵</button>
+      </div>
+      <div id="pumps"></div>
+    </section>
+
+    <div class="actions">
+      <button type="button" id="audit">审 计</button>
+      <button type="button" id="load-sample" class="ghost">载入示例</button>
+    </div>
+
+    <section id="result" class="result hidden" aria-live="polite"></section>
+
+    <footer>
+      计算方法：全部曲线关键点并集切分时间轴；段内总抽排为线性、池量为净流量积分（二次），
+      极值与越界时刻均解析求解。曲线在相邻关键点间线性变化，且各曲线首末时刻须一致。
+    </footer>
+  </div>
+
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

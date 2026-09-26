@@ -1,0 +1,24 @@
+name: flood-audit
+
+services:
+  web:
+    build: .
+    image: flood-audit-web
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+
+  verify:
+    build:
+      context: .
+      dockerfile: Dockerfile.verify
+    image: flood-audit-verify
+    depends_on:
+      web:
+        condition: service_healthy
+    restart: "no"

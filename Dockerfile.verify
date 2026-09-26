@@ -1,0 +1,11 @@
+# verify 一次性服务：代码测试 + 业务计算冒烟 + HTTP 健康检查
+FROM node:22-alpine
+
+WORKDIR /verify
+
+# 与被测静态站点共用同一份引擎源码
+COPY app/engine.js ./app/engine.js
+COPY tests/ ./tests/
+COPY scripts/run-verify.sh ./run-verify.sh
+
+CMD ["sh", "./run-verify.sh"]
