@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>调蓄池抽排曲线审计</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>调蓄池抽排曲线审计</h1>
+    <p>
+      暴雨前复核各泵抽排曲线：录入 2~4 台泵与降雨入流的分段线性曲线（相邻关键点间线性变化、首末时刻一致），
+      系统按全部关键点并集切分时间轴，在每段内连续解析总抽排与池量变化，
+      识别取水口超限与池容漫溢风险（不按分钟步进、不抽样）。
+    </p>
+  </header>
+
+  <main>
+    <section class="panel" id="global-panel">
+      <h2>全局参数</h2>
+      <div class="grid">
+        <label>初始池量 (m³)
+          <input type="number" id="initial-volume" min="0" step="any">
+        </label>
+        <label>池容 (m³)
+          <input type="number" id="capacity" min="0" step="any">
+        </label>
+        <label>取水口上限 (m³/min)
+          <input type="number" id="intake-limit" min="0" step="any">
+        </label>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>降雨入流曲线 <span class="hint">2~5 个关键点</span></h2>
+      <table class="points">
+        <thead>
+          <tr><th>时刻 (min)</th><th>入流 (m³/min)</th><th></th></tr>
+        </thead>
+        <tbody id="rainfall-body"></tbody>
+      </table>
+      <button type="button" id="rain-add" class="btn-ghost">+ 关键点</button>
+    </section>
+
+    <section class="panel">
+      <h2>泵站抽排曲线 <span class="hint">2~4 台泵，每台 2~5 个关键点，时刻为严格递增的非负整数分钟</span></h2>
+      <div id="pumps" class="pumps"></div>
+      <button type="button" id="pump-add" class="btn-ghost">+ 增加泵</button>
+    </section>
+
+    <div class="actions">
+      <button type="button" id="audit-btn" class="btn-primary">审计</button>
+    </div>
+
+    <section id="result" class="panel result hidden" aria-live="polite"></section>
+  </main>
+
+  <footer>
+    <p>任何输入修改都会使审计结论立即失效，需重新审计。</p>
+  </footer>
+
+  <script src="audit.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
